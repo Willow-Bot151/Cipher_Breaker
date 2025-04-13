@@ -2,19 +2,28 @@ class EncryptedStrings():
     def __init__(self, list_of_strings: str = None):
         self.strings_to_encrypt = list_of_strings
     def caeser_shift_char(self, character, shift):
-        utf_char = int.from_bytes(
-            character.encode('utf-8'),
-            byteorder='little')
-        if utf_char > 96 and utf_char < 123:
-            utf_char += shift
-            if utf_char > 122:
-                utf_char -= 26
-        elif utf_char > 64 and utf_char < 91:
-            utf_char += shift
-            if utf_char > 90:
-                utf_char -= 26
-        encrypted_char = utf_char.to_bytes().decode('utf-8')
+        char_code = self.get_char_code(character)
+        char_case = self.is_char_letter_and_what_case(char_code)
+        if char_case:
+            char_code += shift
+            if self.is_char_letter_and_what_case(char_code) != char_case:
+                char_code -= 26
+        encrypted_char = char_code.to_bytes().decode('utf-8')
         return encrypted_char
+    def get_char_code(self,char):
+        char_code = int.from_bytes(char.encode('utf-8'),byteorder='little')
+        return char_code
+    def is_char_letter_and_what_case(self,char_code):
+        if char_code < 65:
+            return False
+        elif char_code < 91:
+            return 'lower'
+        elif char_code < 97:
+            return False
+        elif char_code < 123:
+            return 'upper'
+        else:
+            return False
     def caeser_shift_string(self, string, shift):
         new_string = ''
         for i in range(len(string)):
@@ -23,14 +32,18 @@ class EncryptedStrings():
     def Vigenere_cipher_encrypt_string(self,string,key):
         encrypted_string = ""
         for char_pos in range(len(string)):
-            shift = int.from_bytes(
-                key[char_pos].lower().encode('utf-8'), 
-                byteorder='little') - 96
+            print('char_pos: ',char_pos)
+            print('key_char: ',key[char_pos])
+            shift = self.get_char_code(key[char_pos]) - 97
+            print('shift: ',shift)
             encrypted_char = self.caeser_shift_char(
                 character=string[char_pos],
                 shift=shift)
+            print('encrypted_char: ',encrypted_char)
             encrypted_string += encrypted_char
+        print('encrypted_string: ',encrypted_string)
         return encrypted_string
+        # ignore char pos when char is not letter
 
 class CipherBreaker():
     def __init__(self,encrypted_string : str = None):

@@ -54,10 +54,19 @@ class CeaserCipherEncrypt():
         assert result == expected
 
 class TestVignereCipherEncrypt():
-    def test_encode_string_same_length(self):
-        test_key = 'dog'
-        test_string = 'cat'
-        expected = 'goa'
+    def test_encode_string_long_key_no_spaces(self):
+        test_key = 'abc'
+        test_string = 'dog'
+        expected = 'dpi'
+        test_cipher = EncryptedStrings()
+        result = test_cipher.Vigenere_cipher_encrypt_string(
+            string=test_string,
+            key=test_key)
+        assert result == expected
+    def test_encode_string_long_key(self):
+        test_key = 'oculorhinolaryngology'
+        test_string = 'attacking tonight'
+        expected = 'ovnlqbpvt hznzeuz'
         test_cipher = EncryptedStrings()
         result = test_cipher.Vigenere_cipher_encrypt_string(
             string=test_string,
