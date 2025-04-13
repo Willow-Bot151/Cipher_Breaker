@@ -118,6 +118,34 @@ class TestCeaserCipherBreaker():
         assert result[1] == expected_first
         assert result[-1:][0] == expected_last
 
+class TestVigenereCipherBreaker():
+    @pytest.mark.skip
+    def test_vigenere_cipher_decrypt(self):
+        test_string = 'CSASTPKVSIQUTGQUCSASTPIUAQJB'
+        test_breaker = CipherBreaker()
+        result = test_breaker.vigenere_cipher_decrypt_kasiski_test(test_string)
+        assert result == {
+            'key' : 'ABCDABCDABCDABCDABCDABCDABCD',
+            'text' : 'cryptoisshortforcryptography'
+        }
+    def test_find_substrings(self):
+        test_string = 'chfafblbltoeiwkhnnwchfaf'
+        test_breaker = CipherBreaker()
+        result = test_breaker.find_all_substrings(test_string)
+        assert 'chfaf' in result
+        assert 'abababa' not in result
+    def test_find_repeats_substring(self):
+        test_string = 'chfafblbltoeiwkhnnwchfaf'
+        test_breaker = CipherBreaker()
+        result = test_breaker.find_repeats_of_substrings(test_string)
+        assert result == {
+            'chfaf' : 2,
+            'chfa' : 2,
+            'hfaf' : 2,
+            'chf' : 2,
+            'hfa' : 2,
+            'faf' : 2
+        }
 
 
 

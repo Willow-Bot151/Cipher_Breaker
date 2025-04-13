@@ -88,6 +88,31 @@ class CipherBreaker():
                 utf_char -= 26
         encrypted_char = utf_char.to_bytes().decode('utf-8')
         return encrypted_char
+    def vigenere_cipher_decrypt_kasiski_test(self, string):
+        pass
+    def find_all_substrings(self, string):
+        length = len(string)
+        substrings = []
+        for start in range(length):
+            for end in range(start+2,length+1):
+                substrings.append(string[start:end])
+        return substrings
+    def find_repeats_of_substrings(self, string):
+        substrings = self.find_all_substrings(string)
+        occurances_of_substrings = dict()
+        for substring in substrings:
+            substring_length = len(substring)
+            if substring_length < 3:
+                continue
+            number_of_occurances = 0
+            for i in range(len(string)):
+                if string[i:i+substring_length] == substring:
+                    number_of_occurances += 1
+            if number_of_occurances > 1:
+                occurances_of_substrings[substring] = number_of_occurances
+        return occurances_of_substrings
+    
+
         
 
 
