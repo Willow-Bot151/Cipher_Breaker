@@ -73,7 +73,14 @@ class TestVignereCipherEncrypt():
             key=test_key)
         assert result == expected
     def test_encode_string_repeated_key(self):
-        pass
+        test_key = 'abcd'
+        test_string = 'burger'
+        expected = 'bvtjes'
+        test_cipher = EncryptedStrings()
+        result = test_cipher.Vigenere_cipher_encrypt_string(
+            string=test_string,
+            key=test_key)
+        assert result == expected
 
 
 

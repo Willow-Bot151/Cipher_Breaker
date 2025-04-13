@@ -32,19 +32,15 @@ class EncryptedStrings():
     def Vigenere_cipher_encrypt_string(self,string,key):
         encrypted_string = ""
         position = 0
+        key_lenth = len(key)
         for char_pos in range(len(string)):
-            print('char_pos: ',char_pos)
-            print('key_char: ',key[char_pos])
             if self.is_char_letter_and_what_case(self.get_char_code(string[char_pos])):
-                shift = self.get_char_code(key[position]) - 97
+                shift = self.get_char_code(key[position % key_lenth]) - 97
                 position += 1
-            print('shift: ',shift)
             encrypted_char = self.caeser_shift_char(
                 character=string[char_pos],
                 shift=shift)
-            print('encrypted_char: ',encrypted_char)
             encrypted_string += encrypted_char
-        print('encrypted_string: ',encrypted_string)
         return encrypted_string
 
 class CipherBreaker():
