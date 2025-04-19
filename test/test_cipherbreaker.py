@@ -134,18 +134,95 @@ class TestVigenereCipherBreaker():
         result = test_breaker.find_all_substrings(test_string)
         assert 'chfaf' in result
         assert 'abababa' not in result
-    def test_find_repeats_substring(self):
+    # def test_find_repeats_substring(self):
+    #     test_string = 'chfafblbltoeiwkhnnwchfaf'
+    #     test_breaker = CipherBreaker()
+    #     result = test_breaker.find_repeats_of_substrings(test_string)
+    #     assert result == {
+    #         'chfaf' : 2,
+    #         'chfa' : 2,
+    #         'hfaf' : 2,
+    #         'chf' : 2,
+    #         'hfa' : 2,
+    #         'faf' : 2
+    #     }
+    def test_record_position_of_repeated_substring(self):
         test_string = 'chfafblbltoeiwkhnnwchfaf'
+        test_substring = 'faf'
+        expected = [(2,5),(21,24)]
+        test_breaker = CipherBreaker()
+        result = test_breaker.record_position_of_repeated_substrings(
+            substring=test_substring,
+            string=test_string
+        )
+        assert result == expected
+    def test_count_substrings(self):
+        test_string = 'chfafblbltoeiwkhnnwchfaf'
+        test_substring = 'faf'
+        expected = 2
+        test_breaker = CipherBreaker()
+        result = test_breaker.count_occurances_of_substring(
+            substring=test_substring,
+            string=test_string
+        )
+        assert result == expected
+    def test_calculate_distances_berween_substrings(self):
+        test_positions = [(2,5),(21,24)]
+        expected = [15]
+        test_breaker = CipherBreaker()
+        result = test_breaker.calculate_distances_between_substrings(
+            positions=test_positions
+        )
+        assert result == expected
+    def test_find_repeats_substring(self):
+        test_string = 'chfafblbltoeiwkhnnwfaftoe'
         test_breaker = CipherBreaker()
         result = test_breaker.find_repeats_of_substrings(test_string)
-        assert result == {
-            'chfaf' : 2,
-            'chfa' : 2,
-            'hfaf' : 2,
-            'chf' : 2,
-            'hfa' : 2,
-            'faf' : 2
+        expected = {
+            'faf' : {
+                'repeats' : 2,
+                'distances' : [13]
+            },
+            'toe' : {
+                'repeats' : 2,
+                'distances' : [9]
+            }
         }
+        assert result == expected
+    def test_find_factors(self):
+        test_number = 604
+        test_limit = 200
+        expected1 = [1,2,4,151]
+        expected2 = [1,2,4,151,302,604]
+        test_breaker = CipherBreaker()
+        result1 = test_breaker.find_factors_up_to_limit_of_an_integer(
+            test_number,
+            test_limit)
+        result2 = test_breaker.find_factors_up_to_limit_of_an_integer(test_number)
+        assert result1 == expected1
+        assert result2 == expected2 
 
-
-
+    @pytest.mark.skip
+    def test_big(self):
+        test_string = """
+CVJTNAFENMCDMKBXFSTKLHGSOJWHOFUISFYFBEXEINFIMAYSSDYYIJNPWTOKFRHWVWTZFXHLUYUMSGV
+DURBWBIVXFAFMYFYXPIGBHWIFHHOJBEXAUNFIYLJWDKNHGAOVBHHGVINAULZFOFUQCVFBYNFTYGMMSVGX
+CFZFOKQATUIFUFERQTEWZFOKMWOJYLNZBKSHOEBPNAYTFKNXLBVUAXCXUYYKYTFRHRCFUYCLUKTVGUFQ
+BESWYSSWLBYFEFZVUWTRLLNGIZGBMSZKBTNTSLNNMDPMYMIUBVMTLOBJHHFWTJNAUFIZMBZLIVHMBSUW
+LBYFEUYFUFENBRVJVKOLLGTVUZUAOJNVUWTRLMBATZMFSSOJQXLFPKNAULJCIOYVDRYLUJMVMLVMUKBT
+NAMFPXXJPDYFIJFYUWSGVIUMBWSTUXMSSNYKYDJMCGASOUXBYSMCMEUNFJNAUFUYUMWSFJUKQWSVXXUVU
+FFBPWBCFYLWFDYGUKDRYLUJMFPXXEFZQXYHGFLACEBJBXQSTWIKNMORNXCJFAIBWWBKCMUKIVQTMNBCCT
+HLJYIGIMSYCFVMURMAYOBJUFVAUZINMATCYPBANKBXLWJJNXUJTWIKBATCIOYBPPZHLZJJZHLLVEYAIFP
+LLYIJIZMOUDPLLTHVEVUMBXPIBBMSNSCMCGONBHCKIVLXMGCRMXNZBKQHODESYTVGOUGTHAGRHRMHFREY
+IJIZGAUNFZIYZWOUYWQZPZMAYJFJIKOVFKBTNOPLFWHGUSYTLGNRHBZSOPMIYSLWIKBANYUOYAPWZXHVF
+UQAIATYYKYKPMCEYLIRNPCDMEIMFGWVBBMUPLHMLQJWUGSKQVUDZGSYCFBSWVCHZXFEXXXAQROLYXPIUK
+YHMPNAYFOFHXBSWVCHZXFEXXXAIRPXXGOVHHGGSVNHWSFJUKNZBESHOKIRFEXGUFVKOLVJNAYIVVMMCGO
+FZACKEVUMBATVHKIDMVXBHLIVWTJAUFFACKHCIKSFPKYQNWOLUMYVXYYKYAOYYPUKXFLMBQOFLACKPWZX
+HUFJYGZGSTYWZGSNBBWZIVMNZXFIYWXWBKBAYJFTIFYKIZMUIVZDINLFFUVRGSSBUGNGOPQAILIFOZBZFY
+UWHGIRHWCFIZMWYSUYMAUDMIYVYAWVNAYTFEYYCLPWBBMVZZHZUHMRWXCFUYYVIENFHPYSMKBTMOIZWAI
+XZFOLBSMCHHNOJKBMBATZXXJSSKNAULBJCLFWXDSUYKUCIOYJGFLMBWHFIWIXSFGXCZBMYMBWTRGXXSHXY
+KZGSDSLYDGNBXHAUJBTFDQCYTMWNPWHOFUISMIFFVXFSVFRNA
+"""
+        test_breaker = CipherBreaker()
+        test_breaker.find_repeats_of_substrings(test_string)
+        assert False

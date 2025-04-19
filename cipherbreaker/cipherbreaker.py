@@ -1,3 +1,6 @@
+from pprint import pprint
+import math
+
 class EncryptedStrings():
     def __init__(self, list_of_strings: str = None):
         self.strings_to_encrypt = list_of_strings
@@ -100,25 +103,58 @@ class CipherBreaker():
     def find_repeats_of_substrings(self, string):
         substrings = self.find_all_substrings(string)
         occurances_of_substrings = dict()
+
         for substring in substrings:
-            substring_length = len(substring)
-            if substring_length < 3:
+            if len(substring) < 3:
                 continue
-            number_of_occurances = 0
-            for i in range(len(string)):
-                if string[i:i+substring_length] == substring:
-                    number_of_occurances += 1
-            if number_of_occurances > 1:
-                occurances_of_substrings[substring] = number_of_occurances
+            num_of_occurances = self.count_occurances_of_substring(substring,string)
+            if num_of_occurances < 2:
+                continue
+
+            occurances_of_substrings[substring] ={
+                    'repeats' : num_of_occurances,
+                    'distances' : self.calculate_distances_between_substrings(
+                        self.record_position_of_repeated_substrings(
+                            substring=substring,
+                            string=string
+                        )
+                    )
+                }
+        pprint(occurances_of_substrings)
         return occurances_of_substrings
-    
-
-        
-
-
-# def encrypt_strings(list_of_strings):
-#     for unencrypted_string in list_of_strings:
-#         for c in unencrypted_string:
-#             print(c)
-#             encoded_char = c.encode('utf-8')
-
+    def record_position_of_repeated_substrings(self,substring,string):
+        substring_length = len(substring)
+        positions = []
+        for i in range(len(string)):
+            if string[i:i+substring_length] == substring:
+                positions.append((i,i+substring_length))
+        return positions
+    def count_occurances_of_substring(self,substring, string):
+        substring_length = len(substring)
+        count = 0
+        for i in range(len(string)):
+            if string[i:i+substring_length] == substring:
+                count += 1
+        return count
+    def calculate_distances_between_substrings(self, positions):
+        distances = []
+        occurances = len(positions)
+        if occurances > 1:
+            for i in range(occurances - 1):
+                distance = positions[i+1][0] - positions[i][1] - 1
+                distances.append(distance)
+        return distances
+    def find_factors_up_to_limit_of_an_integer(self, number : int, limit : int = None):
+        if limit == None:
+            limit = number
+        factors = []
+        for i in range(int(math.sqrt(number))):
+            possible_factor = i+1
+            pair_factor = int(number/possible_factor)
+            if number % possible_factor == 0:
+                if possible_factor <= limit:
+                    factors.append(possible_factor)
+                if pair_factor <= limit:
+                    factors.append(pair_factor)
+        factors.sort()
+        return factors
