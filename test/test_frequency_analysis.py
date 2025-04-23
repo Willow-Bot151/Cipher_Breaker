@@ -1,0 +1,24 @@
+from cipherbreaker.cipherbreaker import *
+import pytest
+
+@pytest.fixture
+def test_breaker():
+    return CipherBreaker()
+
+class TestFrequencyAnalysis():
+    def test_frequency_analysis1(self, test_breaker):
+        test_string = """
+LIVITCSWPIYVEWHEVSRIQMXLEYVEOIEWHRXEXIPFEMVEWHKVSTYLXZIXLIKIIXPIJVSZEYPERRGERIM
+WQLMGLMXQERIWGPSRIHMXQEREKIETXMJTPRGEVEKEITREWHEXXLEXXMZITWAWSQWXSWEXTVEPMRXRSJ
+GSTVRIEYVIEXCVMUIMWERGMIWXMJMGCSMWXSJOMIQXLIVIQIVIXQSVSTWHKPEGARCSXRWIEVSWIIBXV
+IZMXFSJXLIKEGAEWHEPSWYSWIWIEVXLISXLIVXLIRGEPIRQIVIIBGIIHMWYPFLEVHEWHYPSRRFQMXLE
+PPXLIECCIEVEWGISJKTVWMRLIHYSPHXLIQIMYLXSJXLIMWRIGXQEROIVFVIZEVAEKPIEWHXEAMWYEPP
+XLMWYRMWXSGSWRMHIVEXMSWMGSTPHLEVHPFKPEZINTCMXIVJSVLMRSCMWMSWVIRCIGXMWYMX"""
+        expected = """
+hereuponlegrandarosewithagraveandstatelyairandbroughtmethebeetlefromaglasscasei
+nwhichitwasencloseditwasabeautifulscarabaeusandatthattimeunknowntonaturalistsof
+courseagreatprizeinascientificpointofviewthereweretworoundblackspotsnearoneextr
+emityofthebackandalongoneneartheotherthescaleswereexceedinglyhardandglossywitha
+lltheappearanceofburnishedgoldtheweightoftheinsectwasveryremarkableandtakingall
+thingsintoconsiderationicouldhardlyblamejupiterforhisopinionrespectingit"""
+        assert test_breaker.frequency_analysis(test_string) == expected

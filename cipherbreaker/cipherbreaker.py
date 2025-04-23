@@ -92,22 +92,27 @@ class CipherBreaker():
         encrypted_char = utf_char.to_bytes().decode('utf-8')
         return encrypted_char
     def vigenere_cipher_decrypt_kasiski_test(self, string):
-        pass
+        stripped_string = self.strip_whitespace(string)
+    def strip_whitespace(self,string):
+        new_string = string.replace(" ","").replace("\n","").replace("\t","")
+        return new_string
     def find_all_substrings(self, string):
-        length = len(string)
+        stripped_string = self.strip_whitespace(string)
+        length = len(stripped_string)
         substrings = []
         for start in range(length):
             for end in range(start+2,length+1):
-                substrings.append(string[start:end])
+                substrings.append(stripped_string[start:end])
         return substrings
     def find_repeats_of_substrings(self, string):
-        substrings = self.find_all_substrings(string)
+        stripped_string = self.strip_whitespace(string)
+        substrings = self.find_all_substrings(stripped_string)
         occurances_of_substrings = dict()
 
         for substring in substrings:
             if len(substring) < 3:
                 continue
-            num_of_occurances = self.count_occurances_of_substring(substring,string)
+            num_of_occurances = self.count_occurances_of_substring(substring,stripped_string)
             if num_of_occurances < 2:
                 continue
 
@@ -116,7 +121,7 @@ class CipherBreaker():
                     'distances' : self.calculate_distances_between_substrings(
                         self.record_position_of_repeated_substrings(
                             substring=substring,
-                            string=string
+                            string=stripped_string
                         )
                     )
                 }
@@ -140,9 +145,11 @@ class CipherBreaker():
         distances = []
         occurances = len(positions)
         if occurances > 1:
-            for i in range(occurances - 1):
-                distance = positions[i+1][0] - positions[i][1] - 1
-                distances.append(distance)
+            for i in range(1,occurances):
+                for j in range(i):
+                    distance = positions[i][0] - positions[j][0]
+                    distances.append(distance)
+        distances.sort()
         return distances
     def find_factors_up_to_limit_of_an_integer(self, number : int, limit : int = None):
         if limit == None:
@@ -158,3 +165,105 @@ class CipherBreaker():
                     factors.append(pair_factor)
         factors.sort()
         return factors
+    def decide_key_length(self,substring_occurances : dict):
+        """
+        largest factor that appears most often
+        most common of
+            largest common denominator of distances between repeats
+
+        best choice:
+            most common factor
+            large factor
+            long substring
+        
+        number of repeats?
+
+        input:
+            'faf' : {
+                'repeats' : 2,
+                'distances' : [13]
+            },
+            'toe' : {
+                'repeats' : 2,
+                'distances' : [9]
+            }
+        
+        factorise_func:
+            takes: integer, k
+            returns: list of factors, [a,b,c]
+        
+        for substring:
+            factorise distances
+            bucket of factors?
+
+        for a key length possibility, k 
+        weight(k) = n(k)
+        """
+        # factor_bucket = dict()
+        # for k, v in substring_occurances.items():
+        #     try:
+        #         factor_bucket[f'{len(k)}-graph']
+        #     except KeyError:
+        #         factor_bucket[f'{len(k)}-graph'] = dict()
+        #     for distance in v['distances']:
+        #         factors = self.find_factors_up_to_limit_of_an_integer(distance)
+        #         for factor in factors:
+        #             try:
+        #                 factor_bucket[f'{len(k)}-graph'][factor] += 1
+        #             except KeyError as e:
+        #                 factor_bucket[f'{len(k)}-graph'][factor] = 1
+        # # for n_graph in factor_bucket.keys():
+        # pprint(factor_bucket)
+        factor_bucket = dict()
+        for k, v in substring_occurances.items():
+            for distance in v['distances']:
+                factors = self.find_factors_up_to_limit_of_an_integer(distance)
+                for factor in factors:
+                    try:
+                        factor_bucket[factor] += 1
+                    except KeyError:
+                        factor_bucket[factor] = 1
+        max_occurances_of_factor = 0
+        for k,v in factor_bucket.items():
+            if v > max_occurances_of_factor:
+                max_occurances_of_factor = v
+        key_lengths = []
+        for k,v in factor_bucket.items():
+            if v == max_occurances_of_factor:
+                key_lengths.append(k)
+        pprint(factor_bucket)
+        return max(key_lengths)
+    def frequency_analysis(self, string):
+        english_letter_frequencies = {
+        'A' : 7.57,
+        'B' : 1.84,
+        'C' : 4.09,
+        'D' : 3.38,
+        'E' : 11.51,
+        'F' : 1.23,
+        'G' : 2.70,
+        'H' : 2.32,
+        'I' : 9.01,
+        'J' : 0.16,
+        'K' : 0.85,
+        'L' : 5.31,
+        'M' : 2.84,
+        'N' : 6.85,
+        'O' : 6.59,
+        'P' : 2.94,
+        'Q' : 0.16,
+        'R' : 7.07,
+        'S' : 9.52,
+        'T' : 6.68,
+        'U' : 3.27,
+        'V' : 0.98,
+        'W' : 0.74,
+        'X' : 0.29,
+        'Y' : 1.63,
+        'Z' : 0.47}
+        clean_string = self.strip_whitespace(string).upper()
+        cipher_letter_frequencies = dict()
+        length = len(clean_string)
+        for k in english_letter_frequencies.keys():
+            cipher_letter_frequencies[k] = (clean_string.count(k) * 100) / length
+        pprint(cipher_letter_frequencies)
